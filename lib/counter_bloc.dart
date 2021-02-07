@@ -2,8 +2,8 @@ import 'dart:async';
 
 class CounterBloc {
   int counter = 0;
-  final counterController = StreamController<int>();
-  final counterActionController = StreamController<void>();
+  final counterController = StreamController<int>.broadcast();
+  final counterActionController = StreamController<void>.broadcast();
 
   CounterBloc() {
     counterActionController.stream.listen((_) {

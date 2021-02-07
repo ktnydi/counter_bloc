@@ -1,4 +1,5 @@
 import 'package:counter_bloc/counter_bloc.dart';
+import 'package:counter_bloc/favorite_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -34,6 +35,19 @@ class MyHomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Counter Bloc'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.favorite_border),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Favorite(),
+                ),
+              );
+            },
+          ),
+        ],
       ),
       body: Center(
         child: Column(
