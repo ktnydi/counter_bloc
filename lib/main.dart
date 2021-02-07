@@ -1,4 +1,6 @@
+import 'package:counter_bloc/counter_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(MyApp());
@@ -7,40 +9,31 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
+    return Provider<CounterBloc>(
+      create: (_) => CounterBloc(),
+      dispose: (context, bloc) {
+        bloc.dispose();
+      },
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+        ),
+        home: MyHomePage(),
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  final String title;
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
+class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final counterBloc = context.read<CounterBloc>();
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text('Counter Bloc'),
       ),
       body: Center(
         child: Column(
@@ -49,15 +42,29 @@ class _MyHomePageState extends State<MyHomePage> {
             Text(
               'You have pushed the button this many times:',
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
+            StreamBuilder<int>(
+              stream: counterBloc.counterController.stream,
+              initialData: 0,
+              builder: (context, snapshot) {
+                if (snapshot.error != null) {
+                  return Center(
+                    child: Text('エラーが発生しました。'),
+                  );
+                }
+
+                return Text(
+                  '${snapshot.data}',
+                  style: Theme.of(context).textTheme.headline4,
+                );
+              },
             ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
+        onPressed: () {
+          counterBloc.counterActionController.sink.add(null);
+        },
         tooltip: 'Increment',
         child: Icon(Icons.add),
       ),
