@@ -1,9 +1,9 @@
-import 'dart:async';
+import 'package:rxdart/rxdart.dart';
 
 class CounterBloc {
   int counter = 0;
-  final counterController = StreamController<int>.broadcast();
-  final counterActionController = StreamController<void>.broadcast();
+  final counterController = BehaviorSubject<int>();
+  final counterActionController = BehaviorSubject<void>();
 
   CounterBloc() {
     counterActionController.stream.listen((_) {
